@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. THEME ENGINE SETTINGS
     // =========================================
     // Choose "1", "2", "3", or "1,2,3" for a random selection!
-    const developerTheme = "1,2,3"; 
+    const developerTheme = "1"; 
     
     function applyTheme(setting) {
         let selectedTheme;
@@ -36,20 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const reviewBtn = document.getElementById("review-btn");
     const rewardMsg = document.getElementById("reward-message");
 
+    // Show modal after 3 seconds
     setTimeout(() => {
-        modal.style.display = "flex";
+        if(modal) modal.style.display = "flex";
     }, 3000);
 
-    closeBtn.addEventListener("click", () => {
-        modal.style.display = "none";
-    });
+    if(closeBtn) {
+        closeBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    }
 
-    reviewBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        window.open("https://maps.app.goo.gl/npVVAFGoE6f2KnGDA", "_blank");
-        reviewBtn.style.display = "none";
-        rewardMsg.style.display = "block";
-    });
+    if(reviewBtn) {
+        reviewBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.open("https://maps.app.goo.gl/npVVAFGoE6f2KnGDA", "_blank");
+            reviewBtn.style.display = "none";
+            rewardMsg.style.display = "block";
+        });
+    }
 
     window.addEventListener("click", (e) => {
         if (e.target === modal) {
@@ -82,55 +87,58 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. Draggable & Auto-scrolling Gallery
     // =========================================
     const track = document.getElementById('gallery-track');
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-    let autoScrollInterval;
+    
+    if(track) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        let autoScrollInterval;
 
-    // Function to handle the automatic sliding
-    function startAutoScroll() {
-        autoScrollInterval = setInterval(() => {
-            track.scrollLeft += 1;
-            
-            // If scrolled halfway, snap back to 0 for infinite loop illusion
-            if(track.scrollLeft >= track.scrollWidth / 2) {
-                track.scrollLeft = 0;
-            }
-        }, 15); // Speed of auto-scroll
-    }
-
-    function stopAutoScroll() {
-        clearInterval(autoScrollInterval);
-    }
-
-    // Start auto-scrolling immediately
-    startAutoScroll();
-
-    // Mouse events for manual dragging
-    track.addEventListener('mousedown', (e) => {
-        isDown = true;
-        stopAutoScroll(); // Pause automatic scrolling when dragged
-        startX = e.pageX - track.offsetLeft;
-        scrollLeft = track.scrollLeft;
-    });
-
-    track.addEventListener('mouseleave', () => {
-        if(isDown) {
-            isDown = false;
-            startAutoScroll(); // Resume if mouse leaves area
+        // Function to handle the automatic sliding
+        function startAutoScroll() {
+            autoScrollInterval = setInterval(() => {
+                track.scrollLeft += 1;
+                
+                // If scrolled halfway, snap back to 0 for infinite loop illusion
+                if(track.scrollLeft >= track.scrollWidth / 2) {
+                    track.scrollLeft = 0;
+                }
+            }, 15); // Speed of auto-scroll
         }
-    });
 
-    track.addEventListener('mouseup', () => {
-        isDown = false;
-        startAutoScroll(); // Resume when mouse click is released
-    });
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+        }
 
-    track.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - track.offsetLeft;
-        const walk = (x - startX) * 2; // Scroll speed multiplier when dragging
-        track.scrollLeft = scrollLeft - walk;
-    });
+        // Start auto-scrolling immediately
+        startAutoScroll();
+
+        // Mouse events for manual dragging
+        track.addEventListener('mousedown', (e) => {
+            isDown = true;
+            stopAutoScroll(); // Pause automatic scrolling when dragged
+            startX = e.pageX - track.offsetLeft;
+            scrollLeft = track.scrollLeft;
+        });
+
+        track.addEventListener('mouseleave', () => {
+            if(isDown) {
+                isDown = false;
+                startAutoScroll(); // Resume if mouse leaves area
+            }
+        });
+
+        track.addEventListener('mouseup', () => {
+            isDown = false;
+            startAutoScroll(); // Resume when mouse click is released
+        });
+
+        track.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - track.offsetLeft;
+            const walk = (x - startX) * 2; // Scroll speed multiplier when dragging
+            track.scrollLeft = scrollLeft - walk;
+        });
+    }
 });
